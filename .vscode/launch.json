@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": ["--batch_size", "32",
+                    "--num_points", "4000",
+                    "--num_workers", "0",
+                    "--dataset_path", "F:\\projects\\ai\\pointnet\\dataset\\DMUNet_OBJ_format\\dataset_PCD_5000",
+                    "--nepoch", "20"]
+            // "args": ["--input_folder", "F:\\projects\\ai\\autoencoder\\unseen_data\\Screw_5.pcd",
+            //     "--nn_model", "F:\\projects\\ai\\autoencoder\\pointnet-autoencoder-pytorch\\saved_models\\autoencoder_9.pth",
+            //         ]
+    
+        }
+    ]
+}
