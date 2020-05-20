@@ -1,5 +1,6 @@
 import torch 
 import argparse
+import os
 
 from torch.utils.data import DataLoader
 from torch import optim
@@ -43,7 +44,10 @@ autoendoder_model = PCAutoEncoder(point_dim, num_points)
 optimizer = optim.Adam(autoendoder_model.parameters(), lr=0.001, betas=(0.9, 0.999))
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
 
-# create instance of Chamfer Distance Loss
+# create folder for trained models to be saved
+os.makedirs('saved_models')
+
+# create instance of Chamfer Distance Loss Instance
 chamfer_dist = ChamferDistance()
 
 # Start the Training 
