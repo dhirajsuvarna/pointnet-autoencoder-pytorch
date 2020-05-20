@@ -6,7 +6,7 @@ import numpy as np
 import sys
 from torch.utils.data import Dataset
 
-TRAIN_TEST_SPLIT_FILE = "train_test_split.json"
+TRAIN_TEST_SPLIT_FILE = "train_test_split_autoencoder.json"
 
 class PointCloudDataset(Dataset):
     """ Point Cloud Dataset """
