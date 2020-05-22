@@ -7,6 +7,7 @@ from torch import optim
 
 from dataprep.dataset import PointCloudDataset
 from model.model import PCAutoEncoder
+from model.model_fxia22 import PointNetAE
 from chamfer_distance.chamfer_distance_cpu import ChamferDistance # https://github.com/chrdiller/pyTorchChamferDistance
 
 
@@ -42,7 +43,9 @@ sample = next(iter(train_ds))
 num_points = ip_options.num_points
 point_dim = 3
 
-autoencoder = PCAutoEncoder(point_dim, num_points)
+# autoencoder = PCAutoEncoder(point_dim, num_points)
+autoencoder = PointNetAE(num_points)
+
 if ip_options.load_saved_model != '':
     autoencoder.load_state_dict(torch.load(ip_options.load_saved_model))
 
@@ -69,7 +72,8 @@ for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
         # points = points.cuda()
         optimizer.zero_grad()
 
-        reconstructed_points, global_feat = autoencoder(points) # perform training
+        # reconstructed_points, global_feat = autoencoder(points) # perform training
+        reconstructed_points = autoencoder(points) # perform training
 
         points = points.transpose(1,2)
         reconstructed_points = reconstructed_points.transpose(1,2)

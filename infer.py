@@ -2,6 +2,7 @@ import torch
 import argparse
 import os
 from model.model import PCAutoEncoder
+from model.model_fxia22 import PointNetAE
 import open3d as o3d
 import numpy as np
 
@@ -24,7 +25,8 @@ state_dict = torch.load(ip_options.nn_model, map_location=device)
 point_dim = 3
 num_points = 2048
 
-autoencoder = PCAutoEncoder(point_dim, num_points)
+# autoencoder = PCAutoEncoder(point_dim, num_points)
+autoencoder = PointNetAE(num_points)
 autoencoder.load_state_dict(state_dict)
 
 def save_as_pcd(iFileName, iPoints, iColor=None):
@@ -70,7 +72,8 @@ def infer_model_file(input_file, autoencoder):
     points = points.transpose(2, 1)
     #points = points.cuda() #uncomment this if running on GPU
     autoencoder = autoencoder.eval()
-    reconstructed_points, global_feat = autoencoder(points)
+    # reconstructed_points, global_feat = autoencoder(points)
+    reconstructed_points = autoencoder(points)
 
     #Reshape 
     reconstructed_points = reconstructed_points.squeeze().transpose(0,1)
