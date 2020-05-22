@@ -9,20 +9,41 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("--input_folder", required=True, help="Single 3d model or input folder containing 3d models")
 parser.add_argument("--nn_model", required=True, help="Trained Neural Network Model")
+parser.add_argument("--out_norm_input", action="store_true", help="Output normalized version of input file")
 
 ip_options = parser.parse_args()
 input_folder = ip_options.input_folder
+
+# Setting the Gradient Calculation Feature off
+# torch.set_grad_enabled(False)
 
 
 device = torch.device('cpu')
 state_dict = torch.load(ip_options.nn_model, map_location=device)
 
 point_dim = 3
-num_points = 4000
+num_points = 2048
 
 autoencoder = PCAutoEncoder(point_dim, num_points)
 autoencoder.load_state_dict(state_dict)
 
+def save_as_pcd(iFileName, iPoints, iColor=None):
+    # Create pcd file of the reconstructed points
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(iPoints)
+    if iColor is not None:
+        pcd.colors = o3d.utility.Vector3dVector(iColor)
+    #outPcdFile = os.path.join(os.path.dirname(iFileName), os.path.splitext(os.path.basename(iFileName))[0] + "_out.pcd")
+    o3d.io.write_point_cloud(iFileName, pcd, write_ascii=True)
+
+def get_path_without_ext(iFilePath):
+    oFilePath = os.path.join(os.path.dirname(iFilePath), os.path.splitext(os.path.basename(iFilePath))[0])
+    return oFilePath
+
+
+def generate_color(iPoints, iColor):
+    color_matrix = np.full(iPoints.shape, iColor)
+    return color_matrix
 
 def infer_model_file(input_file, autoencoder):
     
@@ -38,6 +59,12 @@ def infer_model_file(input_file, autoencoder):
     dist = np.max(np.sqrt(np.sum(points ** 2, axis = 1)),0)
     points = points / dist #scale
 
+    if ip_options.out_norm_input:
+        norm_ip_file = get_path_without_ext(input_file) + "_norm.pcd"
+        green_color = (0, 255, 0)
+        color = generate_color(points, green_color)
+        save_as_pcd(norm_ip_file, points, color)
+
     points = torch.from_numpy(points).float()
     points = torch.unsqueeze(points, 0) #done to introduce batch_size of 1 
     points = points.transpose(2, 1)
@@ -48,12 +75,9 @@ def infer_model_file(input_file, autoencoder):
     #Reshape 
     reconstructed_points = reconstructed_points.squeeze().transpose(0,1)
     reconstructed_points = reconstructed_points.numpy()
-
-    # Create pcd file of the reconstructed points
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(reconstructed_points)
-    outPcdFile = os.path.join(os.path.dirname(input_file), os.path.splitext(os.path.basename(input_file))[0] + "_out.pcd")
-    o3d.io.write_point_cloud(outPcdFile, pcd, write_ascii=True)
+    
+    outPcdFile = get_path_without_ext(input_file) + "_out.pcd"
+    save_as_pcd(outPcdFile, reconstructed_points)
 
 
 

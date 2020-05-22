@@ -25,11 +25,11 @@ class PointCloudDataset(Dataset):
         elif iSplit == "test":
             self.dataset = train_test_split["test"]
 
-        
 
     def __len__(self):
         return len(self.dataset)
 
+        
     def __getitem__(self, index):
         
         pcdFilePath = self.dataset[index]

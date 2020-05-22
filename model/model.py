@@ -18,9 +18,6 @@ class PCAutoEncoder(nn.Module):
         self.conv4 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=1)
         self.conv5 = nn.Conv1d(in_channels=128, out_channels=1024, kernel_size=1)
 
-        #todo: add max pool layer 
-
-
         self.fc1 = nn.Linear(in_features=1024, out_features=1024)
         self.fc2 = nn.Linear(in_features=1024, out_features=1024)
         self.fc3 = nn.Linear(in_features=1024, out_features=num_points*3)
@@ -48,7 +45,6 @@ class PCAutoEncoder(nn.Module):
         x = x.view(-1, 1024)
         # get the global embedding
         global_feat = x
-
 
         #decoder
         x = F.relu(self.bn3(self.fc1(x)))
