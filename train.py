@@ -65,6 +65,7 @@ os.makedirs('saved_models', exist_ok=True)
 chamfer_dist = ChamferDistance()
 
 # Start the Training 
+best_loss = 1e20
 for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
     for i, data in enumerate(train_dl):
         points = data
@@ -87,9 +88,14 @@ for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
         optimizer.step() # Update the weights and biases 
         train_loss += train_loss
 
-    print(f"Mean Training Loss (per epoch) : {train_loss / (len(train_ds)/ip_options.batch_size)}")
+    epoch_loss = train_loss / (len(train_ds)/ip_options.batch_size)
+    print(f"Mean Training Loss (per epoch) : {epoch_loss}")
     scheduler.step()
-    torch.save(autoencoder.state_dict(), 'saved_models/autoencoder_%d.pth' % (epoch))
+
+    # save model with the best loss
+    if epoch_loss < best_loss:  
+        best_loss = epoch_loss
+        torch.save(autoencoder.state_dict(), 'saved_models/autoencoder_%d.pth' % (epoch))
         
 
 
