@@ -1,3 +1,8 @@
+"""
+model by dhiraj inspried from Charles
+
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -54,5 +59,5 @@ class PCAutoEncoder(nn.Module):
         #do reshaping
         reconstructed_points = reconstructed_points.reshape(batch_size, point_dim, num_points)
 
-        return reconstructed_points, global_feat
+        return reconstructed_points #, global_feat
         
