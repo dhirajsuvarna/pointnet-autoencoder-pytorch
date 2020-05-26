@@ -51,7 +51,7 @@ class PointCloudDataset(Dataset):
         # convert to pytorch tensor
         pointSet = torch.from_numpy(pointSet).float()   #convert to float32
 
-        return pointSet
+        return pointSet, pcdFilePath
 
 
 if __name__ == "__main__":

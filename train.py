@@ -91,16 +91,22 @@ chamfer_dist = ChamferDistance()
 
 # Start the Training 
 best_loss = 1e20
+latent_vector_best = torch.Tensor()
 for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
+    latent_vector_all = torch.Tensor()
+    filename_all = list()
     for i, data in enumerate(train_dl):
-        points = data
+        points = data[0]
+        filenames = list(data[1])
         points = points.transpose(2, 1)
         
         points = points.to(device)
 
         optimizer.zero_grad()   # Reseting the gradients
 
-        reconstructed_points, encoded_embedding = autoencoder(points) # perform training
+        reconstructed_points, latent_vector = autoencoder(points) # perform training
+        latent_vector_all = torch.cat((latent_vector_all, latent_vector), 0) 
+        filename_all.extend(filenames)
 
         points = points.transpose(1,2)
         reconstructed_points = reconstructed_points.transpose(1,2)
@@ -127,6 +133,7 @@ for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
     if epoch_loss < best_loss:  
         best_loss = epoch_loss
         torch.save(autoencoder.state_dict(), 'saved_models/autoencoder_%d.pth' % (epoch))
+        writer.add_embedding(latent_vector_all, metadata=filename_all, global_step=epoch, tag="Latent Vector Representation")
 
     # Tensorboard logging 
     # 1. graph of loss function 
@@ -139,7 +146,7 @@ for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
             if param.grad is not None:
                 writer.add_histogram(name + "_grad", param.grad, epoch)
 
-        
+
 
 
         
