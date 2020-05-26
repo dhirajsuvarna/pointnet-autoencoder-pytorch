@@ -1,7 +1,7 @@
 import torch 
 import argparse
 import os
-
+import random
 from torch.utils.data import DataLoader
 from torch import optim
 
@@ -30,10 +30,10 @@ ip_options = parser.parse_args()
 print(f"Input Arguments : {ip_options}")
 
 # Seed the Randomness
-opt.manualSeed = random.randint(1, 10000)  # fix seed
-print("Random Seed: ", opt.manualSeed)
-random.seed(opt.manualSeed)
-torch.manual_seed(opt.manualSeed) #later: 
+manualSeed = random.randint(1, 10000)  # fix seed
+print("Random Seed: ", manualSeed)
+random.seed(manualSeed)
+torch.manual_seed(manualSeed) #later: 
 
 # Create instance of SummaryWriter 
 writer = SummaryWriter('runs/' + ip_options.model_type)
