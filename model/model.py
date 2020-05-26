@@ -59,5 +59,5 @@ class PCAutoEncoder(nn.Module):
         #do reshaping
         reconstructed_points = reconstructed_points.reshape(batch_size, point_dim, num_points)
 
-        return reconstructed_points #, global_feat
+        return reconstructed_points , global_feat
         

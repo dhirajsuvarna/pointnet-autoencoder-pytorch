@@ -100,7 +100,7 @@ for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
 
         optimizer.zero_grad()   # Reseting the gradients
 
-        reconstructed_points = autoencoder(points) # perform training
+        reconstructed_points, encoded_embedding = autoencoder(points) # perform training
 
         points = points.transpose(1,2)
         reconstructed_points = reconstructed_points.transpose(1,2)
