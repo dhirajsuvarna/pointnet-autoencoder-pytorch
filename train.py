@@ -8,9 +8,12 @@ from torch import optim
 from dataprep.dataset import PointCloudDataset
 from model.model import PCAutoEncoder
 from model.model_fxia22 import PointNetAE
-from chamfer_distance.chamfer_distance_cpu import ChamferDistance # https://github.com/chrdiller/pyTorchChamferDistance
-
 from torch.utils.tensorboard import SummaryWriter
+
+if torch.cuda.is_available():
+    from chamfer_distance.chamfer_distance_gpu import ChamferDistance # https://github.com/chrdiller/pyTorchChamferDistance
+else:
+    from chamfer_distance.chamfer_distance_cpu import ChamferDistance # https://github.com/chrdiller/pyTorchChamferDistance
 
 parser = argparse.ArgumentParser()
 
@@ -27,7 +30,7 @@ ip_options = parser.parse_args()
 print(f"Input Arguments : {ip_options}")
 
 # Create instance of SummaryWriter 
-writer = SummaryWriter('runs/experiment-1')
+writer = SummaryWriter('runs/' + ip_options.model_type)
 
 # determine the device to run the network on
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -128,6 +131,8 @@ for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
     for name, param in autoencoder.named_parameters():
         if('bn' not in name and 'stn' not in name):
             writer.add_histogram(name, param, epoch)
+        if param.grad is not None:
+            writer.add_histogram(name + "_grad", param.grad, epoch)
 
         
 
