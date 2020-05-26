@@ -93,7 +93,7 @@ chamfer_dist = ChamferDistance()
 best_loss = 1e20
 latent_vector_best = torch.Tensor()
 for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
-    latent_vector_all = torch.Tensor()
+    latent_vector_all = torch.Tensor().cuda()
     filename_all = list()
     for i, data in enumerate(train_dl):
         points = data[0]
