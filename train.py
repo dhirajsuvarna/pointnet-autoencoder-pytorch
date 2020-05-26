@@ -53,7 +53,7 @@ test_dl = DataLoader(test_ds, batch_size=ip_options.batch_size, shuffle=True, nu
 # [batch_size, num_channels, height, width]
 
 # getting one data sample
-sample = next(iter(train_ds))
+sample, files = next(iter(train_ds))
 
 # Creating Model
 num_points = ip_options.num_points
@@ -91,13 +91,13 @@ chamfer_dist = ChamferDistance()
 
 # Start the Training 
 best_loss = 1e20
-latent_vector_best = torch.Tensor()
 for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
-    latent_vector_all = torch.Tensor().cuda()
+    latent_vector_all = torch.Tensor().to(device)
     filename_all = list()
     for i, data in enumerate(train_dl):
         points = data[0]
         filenames = list(data[1])
+
         points = points.transpose(2, 1)
         
         points = points.to(device)
@@ -133,7 +133,7 @@ for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
     if epoch_loss < best_loss:  
         best_loss = epoch_loss
         torch.save(autoencoder.state_dict(), 'saved_models/autoencoder_%d.pth' % (epoch))
-        writer.add_embedding(latent_vector_all, metadata=filename_all, global_step=epoch, tag="Latent Vector Representation")
+        writer.add_embedding(latent_vector_all, metadata=filename_all, global_step=epoch, tag="Latent_Vectors")
 
     # Tensorboard logging 
     # 1. graph of loss function 
