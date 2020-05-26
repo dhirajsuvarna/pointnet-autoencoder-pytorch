@@ -41,7 +41,6 @@ writer = SummaryWriter('runs/' + ip_options.model_type)
 # determine the device to run the network on
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-
 # Creating Dataset
 train_ds = PointCloudDataset(ip_options.dataset_path, ip_options.num_points, 'train')
 test_ds = PointCloudDataset(ip_options.dataset_path, ip_options.num_points, 'test')
@@ -137,8 +136,8 @@ for epoch in range(int(ip_options.start_epoch_from), ip_options.nepoch):
     for name, param in autoencoder.named_parameters():
         if('bn' not in name and 'stn' not in name):
             writer.add_histogram(name, param, epoch)
-        if param.grad is not None:
-            writer.add_histogram(name + "_grad", param.grad, epoch)
+            if param.grad is not None:
+                writer.add_histogram(name + "_grad", param.grad, epoch)
 
         
 
