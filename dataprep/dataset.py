@@ -5,6 +5,7 @@ import open3d as o3d
 import numpy as np
 import sys
 from torch.utils.data import Dataset
+from util import pointutil
 
 TRAIN_TEST_SPLIT_FILE = "train_test_split_autoencoder.json"
 
@@ -37,16 +38,8 @@ class PointCloudDataset(Dataset):
         cloud = o3d.io.read_point_cloud(pcdFilePath)
         pointSet = np.asarray(cloud.points)
 
-        # Should be in different transform function
-        # extract only "N" number of point from the Point Cloud
-        choice = np.random.choice(len(pointSet), self.npoints, replace=True)
-        pointSet = pointSet[choice, :]
-
-        # should be in different transform function
-        # Normalize and center and bring it to unit sphere
-        pointSet = pointSet - np.expand_dims(np.mean(pointSet, axis = 0), 0) # center
-        dist = np.max(np.sqrt(np.sum(pointSet ** 2, axis = 1)),0)
-        pointSet = pointSet / dist #scale
+        pointSet = pointutil.random_n_points(pointSet, self.npoints)
+        pointSet = pointutil.normalize(pointSet)
 
         # convert to pytorch tensor
         pointSet = torch.from_numpy(pointSet).float()   #convert to float32

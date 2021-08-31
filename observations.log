@@ -1,0 +1,27 @@
+27th Aug, 2021
+
+##################################################
+about files:
+_norm files -> files in which point cloud is normalized into unit sphere
+_out files -> files infered by the learned autoencoder model
+
+##################################################
+experiment-1: 
+Ran the autoencode with the model of fxia on two classes (screw and knife) for epoch of 200
+Results: F:\projects\ai\autoencoder\unseen_data\results\experiment-1
+Observation: 
+the outer shape is captured but not accurately
+cannot make out the shape if its a screw or knife
+
+##################################################
+experiment-2:
+Ran the autoencoder with the model of fxia only on knife dataset for epoch of 200
+Results: F:\projects\ai\autoencoder\unseen_data\results\experiment-2
+observation:
+Results doesn't seem to reproduce the excat shape of the knife, but its better then experiment-1 result
+
+##################################################
+experiment-3:
+
+
+

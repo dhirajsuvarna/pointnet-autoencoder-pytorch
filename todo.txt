@@ -1,0 +1,3 @@
+1. writing latent vector for each loss is time consuming - try to write only the best latent vector
+2. modify the code to include compose feature of pytorch
+3. use hooks to get the latent vector 
